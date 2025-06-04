@@ -35,7 +35,8 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     // drawer 의 close 함수가 suspend 함수로 설계되어 있어서
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    navigate: (String) -> Unit
 ) {
     val context = LocalContext.current
     var isSearchActive by remember { mutableStateOf(false) }
@@ -44,6 +45,7 @@ fun HomeScreen(
         drawerContent = {
             HomeDrawer(
                 closeDrawer = { coroutineScope.launch { drawerState.close() } },
+                navigate = { navigate(it) }
             )
         }
     ) {
@@ -69,8 +71,8 @@ fun HomeScreen(
                         exit = shrinkHorizontally() + fadeOut()
                     ) {
                         HomeSearchAppbar(
-                            onSearch = {Toast.makeText(context, it, Toast.LENGTH_SHORT).show()},
-                            closeSearchbar = {isSearchActive = false}
+                            onSearch = { Toast.makeText(context, it, Toast.LENGTH_SHORT).show() },
+                            closeSearchbar = { isSearchActive = false }
                         )
                     }
                 }
